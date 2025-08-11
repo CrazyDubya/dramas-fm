@@ -70,7 +70,7 @@ export default function MobileNav({ active }: MobileNavProps) {
         <a href="#" className={linkClasses('browse')}>
           Browse
         <a href="#" className={linkClasses('playlists')}>
-          Playlists
+        </a>
         </a>
         <Link href="/search" className={linkClasses('search')}>
           Search
