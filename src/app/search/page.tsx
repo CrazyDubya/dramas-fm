@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { MagnifyingGlassIcon, AdjustmentsHorizontalIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import MobileNav from '@/components/MobileNav';
 import { SearchResult, SearchFilters } from '@/lib/types';
 
 function SearchContent() {
@@ -104,12 +105,7 @@ function SearchContent() {
               </Link>
               <span className="ml-2 text-sm text-purple-300">Radio Drama Archive</span>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-purple-200 hover:text-white transition-colors">Home</Link>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Browse</a>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Playlists</a>
-              <Link href="/search" className="text-white font-semibold">Search</Link>
-            </nav>
+            <MobileNav active="search" />
             <div className="flex items-center space-x-4">
               <button className="text-purple-200 hover:text-white transition-colors">Sign In</button>
               <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors">
@@ -285,8 +281,9 @@ function SearchContent() {
                           
                           <button
                             onClick={() => toggleFavorite(show.id)}
-                            className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors"
-                          >
+                            className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors 
+                            aria-label="Add to favorites
+                            aria-pressed={favorites.has(show.id)
                             {favorites.has(show.id) ? (
                               <HeartSolidIcon className="h-5 w-5 text-red-400" />
                             ) : (

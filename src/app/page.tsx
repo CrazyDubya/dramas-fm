@@ -1,9 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { usePlayer } from '@/context/PlayerContext';
 import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import MobileNav from '@/components/MobileNav';
+import AudioPlayer from '@/components/AudioPlayer';
+import { RadioShow } from '@/lib/types';
+
 
 // Sample data - this will be replaced with actual database calls
 const featuredChannels = [
@@ -16,8 +21,18 @@ const featuredChannels = [
         series: "The Shadow",
         duration: "29:45",
         year: "1940",
-        description: "Lamont Cranston uses his mysterious power to cloud mens minds to fight crime.",
-        archiveUrl: "https://archive.org/details/TheShadow-WhoKnowsWhatEvilLurks"
+        description: "Lamont Cranston uses his mysterious power to cloud men's minds to fight crime.",
+        archiveUrl: "https://archive.org/details/TheShadow-WhoKnowsWhatEvilLurks",
+        rating: 4.8,
+        genre: ["Mystery", "Drama"],
+        actors: ["Orson Welles", "Agnes Moorehead"],
+        playCount: 12847,
+        tags: ["classic", "superhero", "crime-fighting"],
+        quality: {
+          audioQuality: 4,
+          transcriptionAccuracy: 0.92,
+          userReports: 3
+        }
       },
       {
         id: "2", 
@@ -26,7 +41,36 @@ const featuredChannels = [
         duration: "29:12",
         year: "1947",
         description: "Private detective Philip Marlowe investigates a mysterious case in Los Angeles.",
-        archiveUrl: "https://archive.org/details/PhilipMarlowe-TheRedWind"
+        archiveUrl: "https://archive.org/details/PhilipMarlowe-TheRedWind",
+        rating: 4.7,
+        genre: ["Mystery", "Detective"],
+        actors: ["Gerald Mohr", "Jeff Corey"],
+        playCount: 9654,
+        tags: ["detective", "film-noir", "los-angeles"],
+        quality: {
+          audioQuality: 5,
+          transcriptionAccuracy: 0.95,
+          userReports: 1
+        }
+      },
+      {
+        id: "5",
+        title: "Sam Spade - The Maltese Falcon",
+        series: "Adventures of Sam Spade",
+        duration: "30:00",
+        year: "1946",
+        description: "Classic detective story featuring the legendary private investigator Sam Spade.",
+        archiveUrl: "https://archive.org/details/SamSpade-MalteseFalcon",
+        rating: 4.9,
+        genre: ["Mystery", "Detective"],
+        actors: ["Howard Duff", "Lurene Tuttle"],
+        playCount: 15234,
+        tags: ["classic", "detective", "dashiell-hammett"],
+        quality: {
+          audioQuality: 4,
+          transcriptionAccuracy: 0.88,
+          userReports: 2
+        }
       }
     ]
   },
@@ -40,7 +84,17 @@ const featuredChannels = [
         duration: "24:38",
         year: "1955",
         description: "Sci-fi anthology series featuring stories by renowned science fiction authors.",
-        archiveUrl: "https://archive.org/details/XMinusOne-TheGreenHillsOfEarth"
+        archiveUrl: "https://archive.org/details/XMinusOne-TheGreenHillsOfEarth",
+        rating: 4.6,
+        genre: ["Science Fiction", "Anthology"],
+        actors: ["Various Cast"],
+        playCount: 8765,
+        tags: ["anthology", "space", "future"],
+        quality: {
+          audioQuality: 3,
+          transcriptionAccuracy: 0.89,
+          userReports: 4
+        }
       },
       {
         id: "4",
@@ -49,16 +103,99 @@ const featuredChannels = [
         duration: "28:15",
         year: "1950",
         description: "Classic science fiction radio drama from the golden age of radio.",
-        archiveUrl: "https://archive.org/details/DimensionX-TheMartianChronicles"
+        archiveUrl: "https://archive.org/details/DimensionX-TheMartianChronicles",
+        rating: 4.8,
+        genre: ["Science Fiction", "Drama"],
+        actors: ["Various Cast"],
+        playCount: 11543,
+        tags: ["mars", "ray-bradbury", "space-colonization"],
+        quality: {
+          audioQuality: 4,
+          transcriptionAccuracy: 0.91,
+          userReports: 2
+        }
+      },
+      {
+        id: "6",
+        title: "Buck Rogers in the 25th Century",
+        series: "Buck Rogers",
+        duration: "15:00",
+        year: "1939",
+        description: "Adventures of Buck Rogers, the first sci-fi hero of the airwaves.",
+        archiveUrl: "https://archive.org/details/BuckRogers25thCentury",
+        rating: 4.4,
+        genre: ["Science Fiction", "Adventure"],
+        actors: ["Matt Crowley", "Adele Ronson"],
+        playCount: 6789,
+        tags: ["adventure", "space-hero", "vintage"],
+        quality: {
+          audioQuality: 2,
+          transcriptionAccuracy: 0.75,
+          userReports: 8
+        }
+      }
+    ]
+  },
+  {
+    name: "Comedy & Variety",
+    shows: [
+      {
+        id: "7",
+        title: "The Jack Benny Program",
+        series: "Jack Benny Show",
+        duration: "30:00",
+        year: "1945",
+        description: "Classic comedy radio show featuring the legendary Jack Benny and his cast.",
+        archiveUrl: "https://archive.org/details/JackBennyProgram1945",
+        rating: 4.7,
+        genre: ["Comedy", "Variety"],
+        actors: ["Jack Benny", "Mary Livingstone", "Rochester"],
+        playCount: 13456,
+        tags: ["classic-comedy", "variety", "entertainment"],
+        quality: {
+          audioQuality: 4,
+          transcriptionAccuracy: 0.93,
+          userReports: 1
+        }
+      },
+      {
+        id: "8",
+        title: "Amos 'n' Andy",
+        series: "Amos 'n' Andy",
+        duration: "15:00",
+        year: "1943",
+        description: "Popular comedy series from the golden age of radio.",
+        archiveUrl: "https://archive.org/details/AmosAndAndy1943",
+        rating: 4.3,
+        genre: ["Comedy"],
+        actors: ["Freeman Gosden", "Charles Correll"],
+        playCount: 7890,
+        tags: ["classic-comedy", "series"],
+        quality: {
+          audioQuality: 3,
+          transcriptionAccuracy: 0.87,
+          userReports: 5
+        }
       }
     ]
   }
 ];
 
+// Recent activity - shows some activity on the platform
+const recentlyPlayed = [
+  featuredChannels[0].shows[0], // The Shadow
+  featuredChannels[1].shows[1], // Dimension X
+  featuredChannels[2].shows[0], // Jack Benny
+];
+
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+
+  const { playShow, currentShow } = usePlayer();
+  const [currentlyPlaying, setCurrentlyPlaying] = useState<RadioShow | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const toggleFavorite = (showId: string) => {
     const newFavorites = new Set(favorites);
@@ -73,14 +210,21 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      setIsLoading(true);
+      // Simulate loading for better UX
+      setTimeout(() => {
+        window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+      }, 500);
     }
   };
 
-  const playShow = (showId: string) => {
-    setCurrentlyPlaying(showId);
-    // Here we would integrate with Archive.org's audio player
-    console.log(`Playing show ${showId}`);
+
+  const playShow = (show: RadioShow) => {
+    setCurrentlyPlaying(show);
+  };
+
+  const closePlayer = () => {
+    setCurrentlyPlaying(null);
   };
 
   return (
@@ -95,12 +239,7 @@ export default function Home() {
               </Link>
               <span className="ml-2 text-sm text-purple-300">Radio Drama Archive</span>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-white font-semibold">Home</Link>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Browse</a>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Playlists</a>
-              <Link href="/search" className="text-purple-200 hover:text-white transition-colors">Search</Link>
-            </nav>
+            <MobileNav active="home" />
             <div className="flex items-center space-x-4">
               <button className="text-purple-200 hover:text-white transition-colors">Sign In</button>
               <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors">
@@ -128,6 +267,8 @@ export default function Home() {
               <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
               <label htmlFor="home-search" className="sr-only">
                 Search for radio dramas, series, or actors
+              </label>
+
               <input
                 id="home-search"
                 type="text"
@@ -138,9 +279,17 @@ export default function Home() {
               />
               <button
                 type="submit"
-                className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors"
+                disabled={isLoading}
+                className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Search
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Searching...</span>
+                  </div>
+                ) : (
+                  'Search'
+                )}
               </button>
             </div>
           </form>
@@ -157,30 +306,37 @@ export default function Home() {
               <h4 className="text-2xl font-semibold mb-6 text-purple-300">{channel.name}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {channel.shows.map((show) => (
-                  <div key={show.id} className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20 hover:border-purple-400/40 transition-all">
+                  <div key={show.id} className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h5 className="text-lg font-semibold text-white mb-1">{show.title}</h5>
+                        <h5 className="text-lg font-semibold text-white mb-1 hover:text-purple-300 transition-colors">{show.title}</h5>
                         <p className="text-purple-300 text-sm mb-2">{show.series} • {show.year}</p>
                         <p className="text-purple-200 text-sm mb-3 line-clamp-2">{show.description}</p>
-                        <p className="text-purple-400 text-sm">Duration: {show.duration}</p>
+                        <div className="flex items-center space-x-4 text-xs text-purple-400">
+                          <span>Duration: {show.duration}</span>
+                          <span>•</span>
+                          <span>{show.playCount.toLocaleString()} plays</span>
+                        </div>
                       </div>
                     </div>
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <button
-                          onClick={() => playShow(show.id)}
+                          onClick={() => playShow(show)}
+
                           className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors"
                         >
                           <PlayIcon className="h-4 w-4" />
-                          <span>{currentlyPlaying === show.id ? 'Playing' : 'Play'}</span>
+                          <span>{currentShow?.id === show.id ? 'Playing' : 'Play'}</span>
+
                         </button>
                         
                         <button
                           onClick={() => toggleFavorite(show.id)}
                           className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors"
-                        >
+                          aria-label={favorites.has(show.id) ? "Remove from favorites" : "Add to favorites"}
+                          aria-pressed={favorites.has(show.id)}
                           {favorites.has(show.id) ? (
                             <HeartSolidIcon className="h-5 w-5 text-red-400" />
                           ) : (
@@ -191,9 +347,12 @@ export default function Home() {
                       
                       <div className="flex items-center space-x-1">
                         {[...Array(5)].map((_, i) => (
-                          <StarSolidIcon key={i} className="h-4 w-4 text-yellow-400" />
+                          <StarSolidIcon 
+                            key={i} 
+                            className={`h-4 w-4 ${i < Math.floor(show.rating) ? 'text-yellow-400' : 'text-gray-600'}`} 
+                          />
                         ))}
-                        <span className="text-sm text-purple-300 ml-2">4.8</span>
+                        <span className="text-sm text-purple-300 ml-2">{show.rating}</span>
                       </div>
                     </div>
                   </div>
@@ -204,30 +363,62 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Recently Played Section */}
+      <section className="py-16 px-4 bg-black/10">
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-3xl font-bold mb-8 text-center">Recently Popular</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {recentlyPlayed.map((show) => (
+              <div key={show.id} className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+                <h5 className="text-white font-semibold mb-2">{show.title}</h5>
+                <p className="text-purple-300 text-sm mb-3">{show.series}</p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <StarSolidIcon 
+                        key={i} 
+                        className={`h-3 w-3 ${i < Math.floor(show.rating) ? 'text-yellow-400' : 'text-gray-600'}`} 
+                      />
+                    ))}
+                    <span className="text-xs text-purple-300 ml-1">{show.rating}</span>
+                  </div>
+                  <button
+                    onClick={() => playShow(show)}
+                    className="p-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-all duration-200 hover:scale-110"
+                  >
+                    <PlayIcon className="h-4 w-4 text-white" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Features */}
       <section className="py-16 px-4 bg-black/20">
         <div className="max-w-7xl mx-auto">
           <h3 className="text-3xl font-bold mb-12 text-center">Platform Features</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <PlayIcon className="h-8 w-8 text-purple-400" />
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600/30 transition-colors">
+                <PlayIcon className="h-8 w-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </div>
               <h4 className="text-xl font-semibold mb-3">Curated Channels</h4>
               <p className="text-purple-200">Hand-picked collections of radio dramas organized by genre, era, and theme.</p>
             </div>
             
-            <div className="text-center">
-              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <MagnifyingGlassIcon className="h-8 w-8 text-purple-400" />
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600/30 transition-colors">
+                <MagnifyingGlassIcon className="h-8 w-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </div>
               <h4 className="text-xl font-semibold mb-3">Advanced Search</h4>
               <p className="text-purple-200">Powerful search capabilities to find exactly what you&apos;re looking for in our vast archive.</p>
             </div>
             
-            <div className="text-center">
-              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <HeartIcon className="h-8 w-8 text-purple-400" />
+            <div className="text-center group hover:scale-105 transition-transform duration-300">
+              <div className="bg-purple-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 group-hover:bg-purple-600/30 transition-colors">
+                <HeartIcon className="h-8 w-8 text-purple-400 group-hover:text-purple-300 transition-colors" />
               </div>
               <h4 className="text-xl font-semibold mb-3">Personal Playlists</h4>
               <p className="text-purple-200">Create and manage your own playlists with AI-powered recommendations.</p>
@@ -235,6 +426,14 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Audio Player */}
+      {currentlyPlaying && (
+        <AudioPlayer 
+          show={currentlyPlaying} 
+          onClose={closePlayer}
+        />
+      )}
 
       {/* Footer */}
       <footer className="bg-black/40 py-12 px-4">

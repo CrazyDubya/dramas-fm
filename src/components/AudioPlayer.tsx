@@ -2,15 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { PlayIcon, PauseIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/outline';
-import { RadioShow } from '@/lib/types';
+import { usePlayer } from '@/context/PlayerContext';
 
-interface AudioPlayerProps {
-  show: RadioShow | null;
-  onClose: () => void;
-}
-
-export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function AudioPlayer() {
+  const { currentShow: show, isPlaying, setIsPlaying, closePlayer } = usePlayer();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
@@ -23,25 +18,59 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
       // This is a simplified approach - in production you'd need proper Archive.org API integration
       const archiveId = show.archiveUrl.split('/').pop();
       const audioUrl = `https://archive.org/download/${archiveId}/${archiveId}.mp3`;
-      
+
       audioRef.current.src = audioUrl;
       audioRef.current.load();
     }
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function resolveAudioUrl() {
+      if (show) {
+        const archiveId = show.archiveUrl.split('/').pop();
+        try {
+          const response = await fetch(`https://archive.org/metadata/${archiveId}`);
+          if (!response.ok) throw new Error('Failed to fetch metadata');
+          const data = await response.json();
+          // Find the first .mp3 file in the files array
+          const mp3File = data?.files?.find((file: any) => file.name && file.name.toLowerCase().endsWith('.mp3'));
+          if (mp3File) {
+            setAudioUrl(`https://archive.org/download/${archiveId}/${mp3File.name}`);
+          } else {
+            setAudioUrl(null);
+          }
+        } catch (err) {
+          console.error('Error resolving Archive.org audio file:', err);
+          setAudioUrl(null);
+        }
+      } else {
+        setAudioUrl(null);
+      }
+    }
   }, [show]);
+
+  useEffect(() => {
+    if (audioRef.current && audioUrl) {
+      audioRef.current.src = audioUrl;
+      audioRef.current.load();
+    }
+    resolveAudioUrl();
+  }, [audioUrl]);
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
       audioRef.current.play().catch(error => {
         console.error('Error playing audio:', error);
         // Fallback: open Archive.org page in new tab
         window.open(show?.archiveUrl, '_blank');
       });
+      setIsPlaying(true);
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleTimeUpdate = () => {
@@ -108,6 +137,8 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
             <button
               onClick={togglePlayPause}
               className="p-2 bg-purple-600 hover:bg-purple-700 rounded-full transition-colors"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+              aria-pressed={isPlaying}
             >
               {isPlaying ? (
                 <PauseIcon className="h-5 w-5" />
@@ -118,7 +149,10 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
 
             {/* Progress Bar */}
             <div className="flex items-center space-x-2 min-w-0 flex-1">
-              <span className="text-xs text-purple-300 w-12 text-right">
+              <span
+                id="current-time"
+                className="text-xs text-purple-300 w-12 text-right"
+              >
                 {formatTime(currentTime)}
               </span>
               <input
@@ -127,19 +161,29 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
                 max={duration || 0}
                 value={currentTime}
                 onChange={handleSeek}
+                aria-label="Seek"
+                aria-valuemin={0}
+                aria-valuemax={duration || 0}
+                aria-valuenow={currentTime}
+                aria-valuetext={getAriaValueText(currentTime, duration)}
                 className="flex-1 h-1 bg-purple-900 rounded-lg appearance-none cursor-pointer slider"
                 style={{
                   background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #4c1d95 ${(currentTime / duration) * 100}%, #4c1d95 100%)`
                 }}
               />
-              <span className="text-xs text-purple-300 w-12">
+              <span id="duration-time" className="text-xs text-purple-300 w-12">
                 {formatTime(duration)}
               </span>
             </div>
 
             {/* Volume Control */}
             <div className="flex items-center space-x-2">
-              <button onClick={toggleMute} className="p-1 hover:text-purple-300 transition-colors">
+              <button
+                onClick={toggleMute}
+                className="p-1 hover:text-purple-300 transition-colors"
+                aria-label={isMuted || volume === 0 ? 'Unmute' : 'Mute'}
+                aria-pressed={isMuted || volume === 0}
+              >
                 {isMuted || volume === 0 ? (
                   <SpeakerXMarkIcon className="h-4 w-4" />
                 ) : (
@@ -153,14 +197,26 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
                 step="0.1"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
+                aria-label="Volume"
+                aria-valuemin={0}
+                aria-valuemax={1}
+                aria-valuenow={isMuted ? 0 : volume}
+                aria-describedby="volume-level"
                 className="w-16 h-1 bg-purple-900 rounded-lg appearance-none cursor-pointer slider"
               />
+              <span
+                id="volume-level"
+                className="text-xs text-purple-300 w-8 text-right"
+              >
+                {Math.round((isMuted ? 0 : volume) * 100)}%
+              </span>
             </div>
 
             {/* Close Button */}
             <button
-              onClick={onClose}
+              onClick={closePlayer}
               className="text-purple-300 hover:text-white transition-colors"
+              aria-label="Close player"
             >
               ✕
             </button>
