@@ -134,7 +134,7 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
                 aria-valuemin={0}
                 aria-valuemax={duration || 0}
                 aria-valuenow={currentTime}
-                aria-describedby="current-time duration-time"
+                aria-valuetext={getAriaValueText(currentTime, duration)}
                 className="flex-1 h-1 bg-purple-900 rounded-lg appearance-none cursor-pointer slider"
                 style={{
                   background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #4c1d95 ${(currentTime / duration) * 100}%, #4c1d95 100%)`
