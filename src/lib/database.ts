@@ -4,11 +4,6 @@
 import { RadioShow, Channel, SearchResult, SearchFilters } from './types';
 
 // Cloudflare database configuration
-const CLOUDFLARE_DB_KEYS = [
-  'ZhrCu0fqRQ53iufAwgXSXPWsUOOwFr7u-qlx2F8U',
-  'RcQOqrX6VH-Hu1RQgZ6Dt0GTq91fFLbWfUXeqV6R',
-  'xL91qyrlxpvUxRkqEqUk9RUgYc8DBJ8ozSPmmkoI'
-];
 const CLOUDFLARE_DB_KEYS = (process.env.CLOUDFLARE_DB_KEYS || '')
   .split(',')
   .map(key => key.trim())
