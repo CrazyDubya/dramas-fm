@@ -222,7 +222,6 @@ export default function Home() {
 
   const playShow = (show: RadioShow) => {
     setCurrentlyPlaying(show);
-  };
 
   const closePlayer = () => {
     setCurrentlyPlaying(null);
