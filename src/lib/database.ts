@@ -9,7 +9,14 @@ const CLOUDFLARE_DB_KEYS = [
   'RcQOqrX6VH-Hu1RQgZ6Dt0GTq91fFLbWfUXeqV6R',
   'xL91qyrlxpvUxRkqEqUk9RUgYc8DBJ8ozSPmmkoI'
 ];
+const CLOUDFLARE_DB_KEYS = (process.env.CLOUDFLARE_DB_KEYS || '')
+  .split(',')
+  .map(key => key.trim())
+  .filter(key => key.length > 0);
 
+if (CLOUDFLARE_DB_KEYS.length === 0) {
+  console.warn('Warning: No Cloudflare DB API keys found in environment variable CLOUDFLARE_DB_KEYS.');
+}
 // Base URL for the database service (this would be the actual Cloudflare endpoint)
 const DATABASE_BASE_URL = process.env.CLOUDFLARE_DB_URL || 'https://radio-archive-catalog.crazydubya.workers.dev';
 
