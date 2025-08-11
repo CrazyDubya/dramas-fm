@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
+import MobileNav from '@/components/MobileNav';
 
 // Sample data - this will be replaced with actual database calls
 const featuredChannels = [
@@ -95,12 +96,7 @@ export default function Home() {
               </Link>
               <span className="ml-2 text-sm text-purple-300">Radio Drama Archive</span>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-white font-semibold">Home</Link>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Browse</a>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Playlists</a>
-              <Link href="/search" className="text-purple-200 hover:text-white transition-colors">Search</Link>
-            </nav>
+            <MobileNav active="home" />
             <div className="flex items-center space-x-4">
               <button className="text-purple-200 hover:text-white transition-colors">Sign In</button>
               <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors">
