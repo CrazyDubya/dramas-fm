@@ -184,6 +184,7 @@ function SearchContent() {
                     <input
                       type="number"
                       placeholder="From"
+                      aria-label="Year from"
                       value={filters.year?.min || ''}
                       onChange={(e) => handleFilterChange({
                         ...filters,
