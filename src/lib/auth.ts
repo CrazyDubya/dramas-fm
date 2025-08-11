@@ -89,7 +89,7 @@ export async function login(email: string, password: string): Promise<{ success:
     setTimeout(() => {
       if (email && password) {
         const user: User = {
-          id: 'user_' + Math.random().toString(36).substr(2, 9),
+          id: 'user_' + (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)),
           username: email.split('@')[0],
           email,
           userLevel: UserLevel.REGISTERED,
