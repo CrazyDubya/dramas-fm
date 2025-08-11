@@ -126,14 +126,18 @@ export default function Home() {
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative">
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-xl border border-purple-500/30">
               <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
+              <label htmlFor="home-search" className="sr-only">
+                Search for radio dramas, series, or actors
+              </label>
               <input
+                id="home-search"
                 type="text"
                 placeholder="Search for radio dramas, series, or actors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-4 text-white placeholder-purple-300 focus:outline-none"
               />
-              <button 
+              <button
                 type="submit"
                 className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors"
               >
