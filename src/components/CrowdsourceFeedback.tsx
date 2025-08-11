@@ -96,7 +96,6 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
           className="bg-slate-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
         >
           <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
           aria-labelledby="modal-title"
           ref={dialogRef}
           tabIndex={-1}
