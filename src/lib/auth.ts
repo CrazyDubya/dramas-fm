@@ -5,7 +5,12 @@ import { AnonymousUser, User, UserLevel, UserPreferences } from './types';
 
 // Generate a unique cookie ID for anonymous users
 export function generateCookieId(): string {
-  return 'dramas_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+  // Use crypto.randomUUID() for secure, unique IDs
+  return 'dramas_' + (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      ));
 }
 
 // Get or create anonymous user from cookie
