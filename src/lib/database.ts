@@ -5,10 +5,10 @@ import { RadioShow, Channel, SearchResult, SearchFilters } from './types';
 
 // Cloudflare database configuration
 // Removed hard-coded tokens. Use server-side API only.
-const CLOUDFLARE_DB_KEYS: string[] = [];
 
 // Base URL for the database service (this would be the actual Cloudflare endpoint)
-const DATABASE_BASE_URL = process.env.CLOUDFLARE_DB_URL || 'https://radio-archive-catalog.crazydubya.workers.dev';
+// Use relative API routes; server handles DB access via Cloudflare
+const DATABASE_BASE_URL = '';
 
 class DatabaseService {
   private apiKey: string;
@@ -46,8 +46,8 @@ class DatabaseService {
   // Get featured channels for homepage
   async getFeaturedChannels(): Promise<Channel[]> {
     try {
-      const data = await this.makeRequest('/api/channels/featured') as { channels: Channel[] };
-      return data.channels || [];
+      const data = await this.makeRequest('/api/channels') as { data?: { channels?: Channel[] } };
+      return data.data?.channels || [];
     } catch (error) {
       console.error('Failed to fetch featured channels:', error);
       // Return mock data as fallback
