@@ -282,7 +282,7 @@ function SearchContent() {
                           <button
                             onClick={() => toggleFavorite(show.id)}
                             className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors"
-                            aria-label="Add to favorites"
+                            aria-label={favorites.has(show.id) ? "Remove from favorites" : "Add to favorites"}
                             aria-pressed={favorites.has(show.id)}
                           >
                             {favorites.has(show.id) ? (
