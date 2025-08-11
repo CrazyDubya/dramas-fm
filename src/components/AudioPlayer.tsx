@@ -27,7 +27,40 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
       audioRef.current.src = audioUrl;
       audioRef.current.load();
     }
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function resolveAudioUrl() {
+      if (show) {
+        const archiveId = show.archiveUrl.split('/').pop();
+        try {
+          const response = await fetch(`https://archive.org/metadata/${archiveId}`);
+          if (!response.ok) throw new Error('Failed to fetch metadata');
+          const data = await response.json();
+          // Find the first .mp3 file in the files array
+          const mp3File = data?.files?.find((file: any) => file.name && file.name.toLowerCase().endsWith('.mp3'));
+          if (mp3File) {
+            setAudioUrl(`https://archive.org/download/${archiveId}/${mp3File.name}`);
+          } else {
+            setAudioUrl(null);
+          }
+        } catch (err) {
+          console.error('Error resolving Archive.org audio file:', err);
+          setAudioUrl(null);
+        }
+      } else {
+        setAudioUrl(null);
+      }
+    }
   }, [show]);
+
+  useEffect(() => {
+    if (audioRef.current && audioUrl) {
+      audioRef.current.src = audioUrl;
+      audioRef.current.load();
+    }
+    resolveAudioUrl();
+  }, [audioUrl]);
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;
@@ -108,6 +141,8 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
             <button
               onClick={togglePlayPause}
               className="p-2 bg-purple-600 hover:bg-purple-700 rounded-full transition-colors"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+              aria-pressed={isPlaying}
             >
               {isPlaying ? (
                 <PauseIcon className="h-5 w-5" />
@@ -139,7 +174,12 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
 
             {/* Volume Control */}
             <div className="flex items-center space-x-2">
-              <button onClick={toggleMute} className="p-1 hover:text-purple-300 transition-colors">
+              <button
+                onClick={toggleMute}
+                className="p-1 hover:text-purple-300 transition-colors"
+                aria-label={isMuted || volume === 0 ? 'Unmute' : 'Mute'}
+                aria-pressed={isMuted || volume === 0}
+              >
                 {isMuted || volume === 0 ? (
                   <SpeakerXMarkIcon className="h-4 w-4" />
                 ) : (
@@ -161,6 +201,7 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
             <button
               onClick={onClose}
               className="text-purple-300 hover:text-white transition-colors"
+              aria-label="Close player"
             >
               ✕
             </button>

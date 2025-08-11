@@ -78,9 +78,10 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-white">Help Improve Our Catalog</h3>
-            <button 
+            <button
               onClick={onClose}
               className="text-purple-300 hover:text-white transition-colors"
+              aria-label="Close feedback form"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -104,6 +105,8 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
                     type="button"
                     onClick={() => setQualityRating(rating)}
                     className="p-1 hover:scale-110 transition-transform"
+                    aria-label={`Rate ${rating} star${rating > 1 ? 's' : ''}`}
+                    aria-pressed={qualityRating >= rating}
                   >
                     {rating <= qualityRating ? (
                       <StarSolidIcon className="h-8 w-8 text-yellow-400" />
