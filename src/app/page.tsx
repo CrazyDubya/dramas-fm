@@ -220,7 +220,7 @@ export default function Home() {
   };
 
 
-  const playShow = (show: RadioShow) => {
+  const playLocalShow = (show: RadioShow) => {
     setCurrentlyPlaying(show);
 
   const closePlayer = () => {
