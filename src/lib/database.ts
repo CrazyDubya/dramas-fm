@@ -21,7 +21,7 @@ class DatabaseService {
     this.apiKey = CLOUDFLARE_DB_KEYS[0];
   }
 
-  private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
+  private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<unknown> {
     const url = `${DATABASE_BASE_URL}${endpoint}`;
     
     try {
@@ -49,7 +49,7 @@ class DatabaseService {
   // Get featured channels for homepage
   async getFeaturedChannels(): Promise<Channel[]> {
     try {
-      const data = await this.makeRequest('/api/channels/featured');
+      const data = await this.makeRequest('/api/channels/featured') as { channels: Channel[] };
       return data.channels || [];
     } catch (error) {
       console.error('Failed to fetch featured channels:', error);
@@ -80,7 +80,7 @@ class DatabaseService {
         // Add other filter parameters as needed
       }
 
-      const data = await this.makeRequest(`/api/search?${params.toString()}`);
+      const data = await this.makeRequest(`/api/search?${params.toString()}`) as SearchResult;
       return data;
     } catch (error) {
       console.error('Search failed:', error);
@@ -92,7 +92,7 @@ class DatabaseService {
   // Get show details by ID
   async getShowById(id: string): Promise<RadioShow | null> {
     try {
-      const data = await this.makeRequest(`/api/shows/${id}`);
+      const data = await this.makeRequest(`/api/shows/${id}`) as { show: RadioShow };
       return data.show || null;
     } catch (error) {
       console.error('Failed to fetch show:', error);
@@ -103,7 +103,7 @@ class DatabaseService {
   // Get shows by series
   async getShowsBySeries(seriesName: string): Promise<RadioShow[]> {
     try {
-      const data = await this.makeRequest(`/api/series/${encodeURIComponent(seriesName)}`);
+      const data = await this.makeRequest(`/api/series/${encodeURIComponent(seriesName)}`) as { shows: RadioShow[] };
       return data.shows || [];
     } catch (error) {
       console.error('Failed to fetch series shows:', error);
@@ -114,7 +114,7 @@ class DatabaseService {
   // Get random shows for discovery
   async getRandomShows(count = 10): Promise<RadioShow[]> {
     try {
-      const data = await this.makeRequest(`/api/shows/random?count=${count}`);
+      const data = await this.makeRequest(`/api/shows/random?count=${count}`) as { shows: RadioShow[] };
       return data.shows || [];
     } catch (error) {
       console.error('Failed to fetch random shows:', error);

@@ -1,19 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { MagnifyingGlassIcon, PlayIcon, HeartIcon, StarIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
-
-interface RadioShow {
-  id: string;
-  title: string;
-  series: string;
-  duration: string;
-  year: string;
-  description: string;
-  archiveUrl: string;
-  thumbnail?: string;
-}
+import Link from 'next/link';
 
 // Sample data - this will be replaced with actual database calls
 const featuredChannels = [
@@ -26,7 +16,7 @@ const featuredChannels = [
         series: "The Shadow",
         duration: "29:45",
         year: "1940",
-        description: "Lamont Cranston uses his mysterious power to cloud men's minds to fight crime.",
+        description: "Lamont Cranston uses his mysterious power to cloud mens minds to fight crime.",
         archiveUrl: "https://archive.org/details/TheShadow-WhoKnowsWhatEvilLurks"
       },
       {
@@ -80,6 +70,13 @@ export default function Home() {
     setFavorites(newFavorites);
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+    }
+  };
+
   const playShow = (showId: string) => {
     setCurrentlyPlaying(showId);
     // Here we would integrate with Archive.org's audio player
@@ -93,16 +90,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Dramas.FM
-              </h1>
+              </Link>
               <span className="ml-2 text-sm text-purple-300">Radio Drama Archive</span>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Home</a>
+              <Link href="/" className="text-white font-semibold">Home</Link>
               <a href="#" className="text-purple-200 hover:text-white transition-colors">Browse</a>
               <a href="#" className="text-purple-200 hover:text-white transition-colors">Playlists</a>
-              <a href="#" className="text-purple-200 hover:text-white transition-colors">Search</a>
+              <Link href="/search" className="text-purple-200 hover:text-white transition-colors">Search</Link>
             </nav>
             <div className="flex items-center space-x-4">
               <button className="text-purple-200 hover:text-white transition-colors">Sign In</button>
@@ -126,7 +123,7 @@ export default function Home() {
           </p>
           
           {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
+          <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative">
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-xl border border-purple-500/30">
               <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
               <input
@@ -136,11 +133,14 @@ export default function Home() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-4 text-white placeholder-purple-300 focus:outline-none"
               />
-              <button className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors">
+              <button 
+                type="submit"
+                className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors"
+              >
                 Search
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </section>
 
@@ -219,7 +219,7 @@ export default function Home() {
                 <MagnifyingGlassIcon className="h-8 w-8 text-purple-400" />
               </div>
               <h4 className="text-xl font-semibold mb-3">Advanced Search</h4>
-              <p className="text-purple-200">Powerful search capabilities to find exactly what you're looking for in our vast archive.</p>
+              <p className="text-purple-200">Powerful search capabilities to find exactly what you&apos;re looking for in our vast archive.</p>
             </div>
             
             <div className="text-center">
