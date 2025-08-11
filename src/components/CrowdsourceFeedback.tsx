@@ -101,7 +101,6 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
           tabIndex={-1}
           className="bg-slate-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-500/30"
         >
-          <div className="p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 id="modal-title" className="text-xl font-bold text-white">Help Improve Our Catalog</h3>
               <button
