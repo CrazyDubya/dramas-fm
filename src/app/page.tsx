@@ -129,6 +129,7 @@ export default function Home() {
               <input
                 type="text"
                 placeholder="Search for radio dramas, series, or actors..."
+                aria-label="Search for radio dramas, series, or actors"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-4 text-white placeholder-purple-300 focus:outline-none"
