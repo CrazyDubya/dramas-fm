@@ -4,11 +4,8 @@
 import { RadioShow, Channel, SearchResult, SearchFilters } from './types';
 
 // Cloudflare database configuration
-const CLOUDFLARE_DB_KEYS = [
-  'ZhrCu0fqRQ53iufAwgXSXPWsUOOwFr7u-qlx2F8U',
-  'RcQOqrX6VH-Hu1RQgZ6Dt0GTq91fFLbWfUXeqV6R',
-  'xL91qyrlxpvUxRkqEqUk9RUgYc8DBJ8ozSPmmkoI'
-];
+// Removed hard-coded tokens. Use server-side API only.
+const CLOUDFLARE_DB_KEYS: string[] = [];
 
 // Base URL for the database service (this would be the actual Cloudflare endpoint)
 const DATABASE_BASE_URL = process.env.CLOUDFLARE_DB_URL || 'https://radio-archive-catalog.crazydubya.workers.dev';
@@ -18,7 +15,7 @@ class DatabaseService {
 
   constructor() {
     // Use first key as primary, others as fallbacks
-    this.apiKey = CLOUDFLARE_DB_KEYS[0];
+    this.apiKey = ''; // not used; requests go to our Next.js API
   }
 
   private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<unknown> {
@@ -28,7 +25,7 @@ class DatabaseService {
       const response = await fetch(url, {
         ...options,
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          // 'Authorization': `Bearer ${this.apiKey}`, // no direct db auth client-side
           'Content-Type': 'application/json',
           ...options.headers
         }
