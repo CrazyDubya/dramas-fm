@@ -16,7 +16,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 bg-white text-black p-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:border-2 focus:border-blue-600 focus:shadow-lg bg-white text-black p-2"
         >
           Skip to content
         </a>
