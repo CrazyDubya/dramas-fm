@@ -128,7 +128,6 @@ export default function Home() {
               <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
               <label htmlFor="home-search" className="sr-only">
                 Search for radio dramas, series, or actors
-              </label>
               <input
                 id="home-search"
                 type="text"
