@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { d1QueryRaw } from '@/lib/cloudflare';
 import { checkRateLimit } from '@/lib/rateLimit';
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, context: { params: { id: string } }) {
   try {
-    const ip = req.headers.get('x-forwarded-for') || 'local';
+    const ip = _req.headers.get('x-forwarded-for') || 'local';
     if (!checkRateLimit(`show:${ip}`)) {
       return NextResponse.json({ success: false, error: 'Rate limit exceeded' }, { status: 429 });
     }
 
-    const idNum = Number(params.id);
+    const idNum = Number(context.params.id);
     if (!Number.isFinite(idNum)) {
       return NextResponse.json({ success: false, error: 'Invalid id' }, { status: 400 });
     }
