@@ -53,7 +53,7 @@ export default function MobileNav({ active }: MobileNavProps) {
         </Link>
         <a href="#" className={linkClasses('browse')}>
           Browse
-        </a>
+        {/* Browse link removed until route is implemented */}
         <a href="#" className={linkClasses('playlists')}>
           Playlists
         </a>
