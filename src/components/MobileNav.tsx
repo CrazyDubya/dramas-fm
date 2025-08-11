@@ -23,7 +23,25 @@ export default function MobileNav({ active }: MobileNavProps) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+  const [closeReason, setCloseReason] = useState<null | 'escape' | 'overlay' | 'link'>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      firstLinkRef.current?.focus();
+    } else if (closeReason === 'escape' || closeReason === 'overlay') {
+      buttonRef.current?.focus();
+    }
+    if (!open) {
+      setCloseReason(null);
+    }
+  }, [open, closeReason]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        setCloseReason('escape');
         setOpen(false);
       }
     };
