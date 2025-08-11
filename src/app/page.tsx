@@ -7,8 +7,9 @@ import Link from 'next/link';
 import AudioPlayer from '@/components/AudioPlayer';
 import { RadioShow } from '@/lib/types';
 
-// Sample data - this will be replaced with actual database calls
-const featuredChannels = [
+// Live data from D1 via /api/home
+// NOTE: This constant remains as a fallback but will be overridden by fetched data.
+let featuredChannels: any[] = [];
   {
     name: "Mystery & Suspense",
     shows: [
@@ -187,6 +188,14 @@ const recentlyPlayed = [
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [channels, setChannels] = useState<any[]>([]);
+  // Fetch live channels on mount
+  if (typeof window !== 'undefined' && channels.length === 0) {
+    fetch('/api/home')
+      .then(r => r.json())
+      .then(j => setChannels(j?.data?.channels || featuredChannels))
+      .catch(() => setChannels(featuredChannels));
+  }
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [currentlyPlaying, setCurrentlyPlaying] = useState<RadioShow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -294,7 +303,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <h3 className="text-3xl font-bold mb-8 text-center">Featured Channels</h3>
           
-          {featuredChannels.map((channel, channelIndex) => (
+          {(channels.length ? channels : featuredChannels).map((channel: any, channelIndex: number) => (
             <div key={channelIndex} className="mb-12">
               <h4 className="text-2xl font-semibold mb-6 text-purple-300">{channel.name}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
