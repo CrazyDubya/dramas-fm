@@ -1,79 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { databaseService } from '@/lib/database';
-import { SearchFilters } from '@/lib/types';
+import { searchShowsInD1 } from '@/lib/cloudflare';
 
-export async function GET(request: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get('q') || '';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
+    const { searchParams } = new URL(req.url);
+    const q = (searchParams.get('q') || '').trim();
+    const page = Number(searchParams.get('page') || '1');
+    const limit = Number(searchParams.get('limit') || '20');
 
-    // Parse filters
-    const filters: SearchFilters = {};
-    
-    const genre = searchParams.get('genre');
-    if (genre) {
-      filters.genre = genre.split(',');
+    if (!q) {
+      return NextResponse.json({ success: true, data: { shows: [], totalCount: 0, facets: { genres: {}, years: {}, series: {}, actors: {} } } });
     }
 
-    const yearMin = searchParams.get('year_min');
-    const yearMax = searchParams.get('year_max');
-    if (yearMin || yearMax) {
-      filters.year = {};
-      if (yearMin) filters.year.min = parseInt(yearMin);
-      if (yearMax) filters.year.max = parseInt(yearMax);
-    }
+    const { total, shows, audioByShow } = await searchShowsInD1({ q, page, limit });
 
-    const durationMin = searchParams.get('duration_min');
-    const durationMax = searchParams.get('duration_max');
-    if (durationMin || durationMax) {
-      filters.duration = {};
-      if (durationMin) filters.duration.min = parseInt(durationMin);
-      if (durationMax) filters.duration.max = parseInt(durationMax);
-    }
+    const mapped = shows.map((s: any) => ({
+      id: String(s.id),
+      title: s.title || '',
+      series: s.identifier || '',
+      duration: audioByShow?.[String(s.id)]?.duration ? `${Math.round(audioByShow[String(s.id)].duration / 60)}:00` : '',
+      year: String(s.year || ''),
+      description: s.description || '',
+      archiveUrl: audioByShow?.[String(s.id)]?.streaming_url || '',
+      genre: [],
+      actors: [],
+      rating: 4.0,
+      playCount: Number(s.downloads || 0),
+      tags: []
+    }));
 
-    const ratingMin = searchParams.get('rating_min');
-    const ratingMax = searchParams.get('rating_max');
-    if (ratingMin || ratingMax) {
-      filters.rating = {};
-      if (ratingMin) filters.rating.min = parseFloat(ratingMin);
-      if (ratingMax) filters.rating.max = parseFloat(ratingMax);
-    }
+    const data = {
+      shows: mapped,
+      totalCount: total,
+      facets: {
+        genres: {},
+        years: {},
+        series: {},
+        actors: {}
+      }
+    };
 
-    const series = searchParams.get('series');
-    if (series) {
-      filters.series = series;
-    }
-
-    const actors = searchParams.get('actors');
-    if (actors) {
-      filters.actors = actors.split(',');
-    }
-
-    const tags = searchParams.get('tags');
-    if (tags) {
-      filters.tags = tags.split(',');
-    }
-
-    const ageRating = searchParams.get('age_rating');
-    if (ageRating) {
-      filters.ageRating = ageRating.split(',');
-    }
-
-    // Perform search
-    const results = await databaseService.searchShows(query, filters, page, limit);
-
-    return NextResponse.json({
-      success: true,
-      data: results
-    });
-
-  } catch (error) {
-    console.error('Search API error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Search failed'
-    }, { status: 500 });
+    return NextResponse.json({ success: true, data });
+  } catch (err: any) {
+    console.error('Search API error', err);
+    return NextResponse.json({ success: false, error: err?.message || 'Internal error' }, { status: 500 });
   }
 }

@@ -1,35 +1,21 @@
 # Dramas.FM
 
-A comprehensive radio drama streaming platform featuring curated channels, advanced search capabilities, and user-generated playlists with AI assistance.
+A comprehensive radio drama streaming platform featuring curated channels, advanced search, and user-generated playlists.
 
-## Features
+## Cloudflare D1 integration
 
-- **Curated Channels**: Homepage with admin-curated channels streaming from Archive.org
-- **Advanced Search**: Visual and dense elastic-like search of radio drama catalog
-- **User Playlists**: AI and algorithmic assistance for playlist creation
-- **Multi-level Users**: Anonymous cookie-based to power users with API access
-- **Crowdsourcing**: Non-intrusive data collection for quality and tagging
+Server-side API routes now query a Cloudflare D1 database containing Archive.org metadata.
 
-## Getting Started
+Setup:
+- Copy .env.local.example to .env.local
+- Fill CF_ACCOUNT_ID and CF_API_TOKEN
+- Optionally set CF_D1_DB_ID (otherwise CF_D1_DB_NAME is used to resolve the id)
+- Run the dev server: npm install && npm run dev
 
-First, run the development server:
+Search API:
+- GET /api/search?q=burns&page=1&limit=20
+- Returns { success, data: { shows[], totalCount, facets } }
 
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## User Levels
-
-- **Level 0**: Pseudo-anonymous cookie-based users
-- **Level 1**: Registered users with saved playlists
-- **Power Users**: API access and tagging/categorization tools
-- **Admins**: Site and user management
-
-## Technology Stack
-
-- **Frontend**: Next.js 15 with TypeScript and Tailwind CSS
-- **Database**: Cloudflare integration for radio drama catalog
-- **Streaming**: Archive.org integration
-- **Authentication**: Multi-level user system
+Security:
+- Do not expose CF_API_TOKEN in client-side code. Only server API routes use it.
+- Remove hard-coded tokens in src/lib/database.ts for production.
