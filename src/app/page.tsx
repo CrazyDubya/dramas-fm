@@ -325,8 +325,9 @@ export default function Home() {
                         
                         <button
                           onClick={() => toggleFavorite(show.id)}
-                          className="p-2 rounded-lg hover:bg-purple-600/20 transition-all duration-200 hover:scale-110 active:scale-95"
-                        >
+                          className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors"
+                          aria-label={favorites.has(show.id) ? "Remove from favorites" : "Add to favorites"}
+                          aria-pressed={favorites.has(show.id)}
                           {favorites.has(show.id) ? (
                             <HeartSolidIcon className="h-5 w-5 text-red-400" />
                           ) : (
