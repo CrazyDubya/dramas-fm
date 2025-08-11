@@ -123,7 +123,7 @@ export async function register(email: string, password: string, username: string
     setTimeout(() => {
       if (email && password && username) {
         const user: User = {
-          id: 'user_' + Math.random().toString(36).substr(2, 9),
+          id: 'user_' + crypto.randomUUID(),
           username,
           email,
           userLevel: UserLevel.REGISTERED,
