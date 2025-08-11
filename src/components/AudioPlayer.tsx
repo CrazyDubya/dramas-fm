@@ -153,7 +153,10 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
 
             {/* Progress Bar */}
             <div className="flex items-center space-x-2 min-w-0 flex-1">
-              <span className="text-xs text-purple-300 w-12 text-right">
+              <span
+                id="current-time"
+                className="text-xs text-purple-300 w-12 text-right"
+              >
                 {formatTime(currentTime)}
               </span>
               <input
@@ -162,12 +165,17 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
                 max={duration || 0}
                 value={currentTime}
                 onChange={handleSeek}
+                aria-label="Seek"
+                aria-valuemin={0}
+                aria-valuemax={duration || 0}
+                aria-valuenow={currentTime}
+                aria-valuetext={getAriaValueText(currentTime, duration)}
                 className="flex-1 h-1 bg-purple-900 rounded-lg appearance-none cursor-pointer slider"
                 style={{
                   background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #4c1d95 ${(currentTime / duration) * 100}%, #4c1d95 100%)`
                 }}
               />
-              <span className="text-xs text-purple-300 w-12">
+              <span id="duration-time" className="text-xs text-purple-300 w-12">
                 {formatTime(duration)}
               </span>
             </div>
@@ -193,8 +201,19 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
                 step="0.1"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
+                aria-label="Volume"
+                aria-valuemin={0}
+                aria-valuemax={1}
+                aria-valuenow={isMuted ? 0 : volume}
+                aria-describedby="volume-level"
                 className="w-16 h-1 bg-purple-900 rounded-lg appearance-none cursor-pointer slider"
               />
+              <span
+                id="volume-level"
+                className="text-xs text-purple-300 w-8 text-right"
+              >
+                {Math.round((isMuted ? 0 : volume) * 100)}%
+              </span>
             </div>
 
             {/* Close Button */}
