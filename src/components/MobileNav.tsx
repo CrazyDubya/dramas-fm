@@ -56,7 +56,6 @@ export default function MobileNav({ active }: MobileNavProps) {
       setOpen(false);
     }
   };
-
   const linkClasses = (name: string) =>
     name === active
       ? 'text-white font-semibold'
