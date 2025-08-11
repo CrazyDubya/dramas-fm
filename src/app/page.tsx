@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePlayer } from '@/context/PlayerContext';
 import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
@@ -58,7 +59,7 @@ const featuredChannels = [
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const { playShow, currentShow } = usePlayer();
 
   const toggleFavorite = (showId: string) => {
     const newFavorites = new Set(favorites);
@@ -75,12 +76,6 @@ export default function Home() {
     if (searchQuery.trim()) {
       window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
     }
-  };
-
-  const playShow = (showId: string) => {
-    setCurrentlyPlaying(showId);
-    // Here we would integrate with Archive.org's audio player
-    console.log(`Playing show ${showId}`);
   };
 
   return (
@@ -167,11 +162,11 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-3">
                         <button
-                          onClick={() => playShow(show.id)}
+                          onClick={() => playShow(show)}
                           className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors"
                         >
                           <PlayIcon className="h-4 w-4" />
-                          <span>{currentlyPlaying === show.id ? 'Playing' : 'Play'}</span>
+                          <span>{currentShow?.id === show.id ? 'Playing' : 'Play'}</span>
                         </button>
                         
                         <button
