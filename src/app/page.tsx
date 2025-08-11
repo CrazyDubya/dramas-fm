@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { usePlayer } from '@/context/PlayerContext';
 import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
@@ -190,8 +191,11 @@ const recentlyPlayed = [
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
+  const { playShow, currentShow } = usePlayer();
   const [currentlyPlaying, setCurrentlyPlaying] = useState<RadioShow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
 
   const toggleFavorite = (showId: string) => {
     const newFavorites = new Set(favorites);
@@ -213,6 +217,7 @@ export default function Home() {
       }, 500);
     }
   };
+
 
   const playShow = (show: RadioShow) => {
     setCurrentlyPlaying(show);
@@ -314,10 +319,12 @@ export default function Home() {
                       <div className="flex items-center space-x-3">
                         <button
                           onClick={() => playShow(show)}
-                          className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95"
+
+                          className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors"
                         >
                           <PlayIcon className="h-4 w-4" />
-                          <span>{currentlyPlaying?.id === show.id ? 'Playing' : 'Play'}</span>
+                          <span>{currentShow?.id === show.id ? 'Playing' : 'Play'}</span>
+
                         </button>
                         
                         <button

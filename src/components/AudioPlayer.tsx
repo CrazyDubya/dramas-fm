@@ -2,15 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { PlayIcon, PauseIcon, SpeakerWaveIcon, SpeakerXMarkIcon } from '@heroicons/react/24/outline';
-import { RadioShow } from '@/lib/types';
+import { usePlayer } from '@/context/PlayerContext';
 
-interface AudioPlayerProps {
-  show: RadioShow | null;
-  onClose: () => void;
-}
-
-export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
+export default function AudioPlayer() {
+  const { currentShow: show, isPlaying, setIsPlaying, closePlayer } = usePlayer();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
@@ -23,7 +18,7 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
       // This is a simplified approach - in production you'd need proper Archive.org API integration
       const archiveId = show.archiveUrl.split('/').pop();
       const audioUrl = `https://archive.org/download/${archiveId}/${archiveId}.mp3`;
-      
+
       audioRef.current.src = audioUrl;
       audioRef.current.load();
     }
@@ -67,14 +62,15 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
 
     if (isPlaying) {
       audioRef.current.pause();
+      setIsPlaying(false);
     } else {
       audioRef.current.play().catch(error => {
         console.error('Error playing audio:', error);
         // Fallback: open Archive.org page in new tab
         window.open(show?.archiveUrl, '_blank');
       });
+      setIsPlaying(true);
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleTimeUpdate = () => {
@@ -218,7 +214,7 @@ export default function AudioPlayer({ show, onClose }: AudioPlayerProps) {
 
             {/* Close Button */}
             <button
-              onClick={onClose}
+              onClick={closePlayer}
               className="text-purple-300 hover:text-white transition-colors"
               aria-label="Close player"
             >

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AudioPlayer from '@/components/AudioPlayer';
+import { PlayerProvider } from '@/context/PlayerContext';
 
 export const metadata: Metadata = {
   title: "Dramas.FM - Radio Drama Streaming Platform",
@@ -14,13 +16,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-0 focus:left-0 focus:z-50 focus:border-2 focus:border-blue-600 focus:shadow-lg bg-white text-black p-2"
-        >
-          Skip to content
-        </a>
-        <main id="main-content">{children}</main>
+        <PlayerProvider>
+          {children}
+          <AudioPlayer />
+        </PlayerProvider>
       </body>
     </html>
   );
