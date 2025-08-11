@@ -46,7 +46,7 @@ class DatabaseService {
   // Get featured channels for homepage
   async getFeaturedChannels(): Promise<Channel[]> {
     try {
-      const data = await this.makeRequest('/api/channels') as { data?: { channels?: Channel[] } };
+      const data = await this.makeRequest('/api/home') as { data?: { channels?: Channel[] } };
       return data.data?.channels || [];
     } catch (error) {
       console.error('Failed to fetch featured channels:', error);
