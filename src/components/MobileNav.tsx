@@ -25,7 +25,6 @@ export default function MobileNav({ active }: MobileNavProps) {
     const handleKeyDown = (e: KeyboardEvent) => {
   const [closeReason, setCloseReason] = useState<null | 'escape' | 'overlay' | 'link'>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     if (open) {
