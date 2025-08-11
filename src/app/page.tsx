@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+
 import { usePlayer } from '@/context/PlayerContext';
 import { MagnifyingGlassIcon, PlayIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon, StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
@@ -8,6 +9,7 @@ import Link from 'next/link';
 import MobileNav from '@/components/MobileNav';
 import AudioPlayer from '@/components/AudioPlayer';
 import { RadioShow } from '@/lib/types';
+
 
 
 // Sample data - this will be replaced with actual database calls
@@ -191,7 +193,6 @@ const recentlyPlayed = [
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-
   const { playShow, currentShow } = usePlayer();
   const [currentlyPlaying, setCurrentlyPlaying] = useState<RadioShow | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -239,7 +240,9 @@ export default function Home() {
               </Link>
               <span className="ml-2 text-sm text-purple-300">Radio Drama Archive</span>
             </div>
+
             <MobileNav active="home" />
+
             <div className="flex items-center space-x-4">
               <button className="text-purple-200 hover:text-white transition-colors">Sign In</button>
               <button className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors">
@@ -265,19 +268,23 @@ export default function Home() {
           <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative">
             <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-xl border border-purple-500/30">
               <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
+
               <label htmlFor="home-search" className="sr-only">
                 Search for radio dramas, series, or actors
               </label>
 
               <input
                 id="home-search"
+
                 type="text"
                 placeholder="Search for radio dramas, series, or actors..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 bg-transparent px-4 py-4 text-white placeholder-purple-300 focus:outline-none"
               />
+
               <button
+
                 type="submit"
                 disabled={isLoading}
                 className="bg-purple-600 hover:bg-purple-700 px-6 py-2 m-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -325,18 +332,22 @@ export default function Home() {
                         <button
                           onClick={() => playShow(show)}
 
+
                           className="flex items-center space-x-2 bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded-lg transition-colors"
                         >
                           <PlayIcon className="h-4 w-4" />
                           <span>{currentShow?.id === show.id ? 'Playing' : 'Play'}</span>
 
+
                         </button>
                         
                         <button
                           onClick={() => toggleFavorite(show.id)}
+
                           className="p-2 rounded-lg hover:bg-purple-600/20 transition-colors"
                           aria-label={favorites.has(show.id) ? "Remove from favorites" : "Add to favorites"}
                           aria-pressed={favorites.has(show.id)}
+
                           {favorites.has(show.id) ? (
                             <HeartSolidIcon className="h-5 w-5 text-red-400" />
                           ) : (

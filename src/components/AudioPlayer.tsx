@@ -6,6 +6,7 @@ import { usePlayer } from '@/context/PlayerContext';
 
 export default function AudioPlayer() {
   const { currentShow: show, isPlaying, setIsPlaying, closePlayer } = usePlayer();
+
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
@@ -18,7 +19,6 @@ export default function AudioPlayer() {
       // This is a simplified approach - in production you'd need proper Archive.org API integration
       const archiveId = show.archiveUrl.split('/').pop();
       const audioUrl = `https://archive.org/download/${archiveId}/${archiveId}.mp3`;
-
       audioRef.current.src = audioUrl;
       audioRef.current.load();
     }
@@ -62,6 +62,7 @@ export default function AudioPlayer() {
 
     if (isPlaying) {
       audioRef.current.pause();
+
       setIsPlaying(false);
     } else {
       audioRef.current.play().catch(error => {
@@ -71,6 +72,7 @@ export default function AudioPlayer() {
       });
       setIsPlaying(true);
     }
+
   };
 
   const handleTimeUpdate = () => {
@@ -139,6 +141,7 @@ export default function AudioPlayer() {
               className="p-2 bg-purple-600 hover:bg-purple-700 rounded-full transition-colors"
               aria-label={isPlaying ? 'Pause' : 'Play'}
               aria-pressed={isPlaying}
+
             >
               {isPlaying ? (
                 <PauseIcon className="h-5 w-5" />
@@ -153,6 +156,7 @@ export default function AudioPlayer() {
                 id="current-time"
                 className="text-xs text-purple-300 w-12 text-right"
               >
+
                 {formatTime(currentTime)}
               </span>
               <input
@@ -161,6 +165,7 @@ export default function AudioPlayer() {
                 max={duration || 0}
                 value={currentTime}
                 onChange={handleSeek}
+
                 aria-label="Seek"
                 aria-valuemin={0}
                 aria-valuemax={duration || 0}
@@ -171,19 +176,23 @@ export default function AudioPlayer() {
                   background: `linear-gradient(to right, #8b5cf6 0%, #8b5cf6 ${(currentTime / duration) * 100}%, #4c1d95 ${(currentTime / duration) * 100}%, #4c1d95 100%)`
                 }}
               />
+
               <span id="duration-time" className="text-xs text-purple-300 w-12">
+
                 {formatTime(duration)}
               </span>
             </div>
 
             {/* Volume Control */}
             <div className="flex items-center space-x-2">
+
               <button
                 onClick={toggleMute}
                 className="p-1 hover:text-purple-300 transition-colors"
                 aria-label={isMuted || volume === 0 ? 'Unmute' : 'Mute'}
                 aria-pressed={isMuted || volume === 0}
               >
+
                 {isMuted || volume === 0 ? (
                   <SpeakerXMarkIcon className="h-4 w-4" />
                 ) : (
@@ -197,6 +206,7 @@ export default function AudioPlayer() {
                 step="0.1"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
+
                 aria-label="Volume"
                 aria-valuemin={0}
                 aria-valuemax={1}
@@ -210,10 +220,12 @@ export default function AudioPlayer() {
               >
                 {Math.round((isMuted ? 0 : volume) * 100)}%
               </span>
+
             </div>
 
             {/* Close Button */}
             <button
+
               onClick={closePlayer}
               className="text-purple-300 hover:text-white transition-colors"
               aria-label="Close player"

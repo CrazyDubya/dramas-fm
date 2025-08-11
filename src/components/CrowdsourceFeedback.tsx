@@ -1,9 +1,11 @@
 'use client';
 
+
 import { useState, useEffect, useRef } from 'react';
 import { XMarkIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import FocusLock from 'react-focus-lock';
+
 import { RadioShow, CrowdsourceData } from '@/lib/types';
 
 interface CrowdsourceFeedbackProps {
@@ -20,6 +22,7 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
   const [contentWarnings, setContentWarnings] = useState<string[]>([]);
   const [additionalTags, setAdditionalTags] = useState('');
   const [transcriptionCorrections, setTranscriptionCorrections] = useState('');
+
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -27,6 +30,7 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
       dialogRef.current?.focus();
     }
   }, [isOpen]);
+
 
   const emotionOptions = [
     'suspenseful', 'funny', 'scary', 'romantic', 'exciting', 'sad', 'uplifting', 
@@ -82,6 +86,7 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+
       <FocusLock returnFocus>
         <div
           role="dialog"
@@ -109,6 +114,7 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
               </button>
             </div>
 
+
           <div className="mb-4 p-4 bg-purple-900/20 rounded-lg border border-purple-500/30">
             <h4 className="font-semibold text-purple-200 mb-1">{show.title}</h4>
             <p className="text-purple-300 text-sm">{show.series} • {show.year}</p>
@@ -127,8 +133,10 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
                     type="button"
                     onClick={() => setQualityRating(rating)}
                     className="p-1 hover:scale-110 transition-transform"
+
                     aria-label={`Rate ${rating} star${rating > 1 ? 's' : ''}`}
                     aria-pressed={qualityRating >= rating}
+
                   >
                     {rating <= qualityRating ? (
                       <StarSolidIcon className="h-8 w-8 text-yellow-400" />
@@ -275,7 +283,9 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
           </p>
         </div>
       </div>
+
       </FocusLock>
+
     </div>
   );
 }
