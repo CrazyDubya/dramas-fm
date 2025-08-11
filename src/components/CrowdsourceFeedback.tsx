@@ -127,6 +127,8 @@ export default function CrowdsourceFeedback({ show, isOpen, onClose, onSubmit }:
                     type="button"
                     onClick={() => setQualityRating(rating)}
                     className="p-1 hover:scale-110 transition-transform"
+                    aria-label={`Rate ${rating} star${rating > 1 ? 's' : ''}`}
+                    aria-pressed={qualityRating >= rating}
                   >
                     {rating <= qualityRating ? (
                       <StarSolidIcon className="h-8 w-8 text-yellow-400" />
