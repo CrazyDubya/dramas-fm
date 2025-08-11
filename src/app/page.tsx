@@ -18,7 +18,7 @@ const featuredChannels = [
         series: "The Shadow",
         duration: "29:45",
         year: "1940",
-        description: "Lamont Cranston uses his mysterious power to cloud mens minds to fight crime.",
+        description: "Lamont Cranston uses his mysterious power to cloud men's minds to fight crime.",
         archiveUrl: "https://archive.org/details/TheShadow-WhoKnowsWhatEvilLurks",
         rating: 4.8,
         genre: ["Mystery", "Drama"],
