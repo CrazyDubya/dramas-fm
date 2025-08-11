@@ -123,11 +123,11 @@ function SearchContent() {
             <div className="flex gap-4">
               <div className="flex-1 flex items-center bg-white/10 backdrop-blur-sm rounded-xl border border-purple-500/30">
                 <MagnifyingGlassIcon className="h-6 w-6 text-purple-300 ml-4" />
-                <label htmlFor="search-page-input" className="sr-only">
+                <label htmlFor="search-input" className="sr-only">
                   Search for radio dramas, series, or actors
                 </label>
                 <input
-                  id="search-page-input"
+                  id="search-input"
                   type="text"
                   placeholder="Search for radio dramas, series, or actors..."
                   value={query}

@@ -268,6 +268,7 @@ export default function Home() {
               <label htmlFor="home-search" className="sr-only">
                 Search for radio dramas, series, or actors
               </label>
+
               <input
                 id="home-search"
                 type="text"
