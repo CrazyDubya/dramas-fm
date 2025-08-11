@@ -16,7 +16,7 @@ export interface RadioShow {
   tags: string[];
   ageRating?: 'G' | 'PG' | 'PG13' | 'R';
   quality: {
-    audioQuality: number; // 1-5 rating
+    audioQuality: 1 | 2 | 3 | 4 | 5; // 1-5 rating
     transcriptionAccuracy: number;
     userReports: number;
   };
