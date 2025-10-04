@@ -4,23 +4,18 @@
 import { RadioShow, Channel, SearchResult, SearchFilters } from './types';
 
 // Cloudflare database configuration
-const CLOUDFLARE_DB_KEYS = (process.env.CLOUDFLARE_DB_KEYS || '')
-  .split(',')
-  .map(key => key.trim())
-  .filter(key => key.length > 0);
+// Removed hard-coded tokens. Use server-side API only.
 
-if (CLOUDFLARE_DB_KEYS.length === 0) {
-  console.warn('Warning: No Cloudflare DB API keys found in environment variable CLOUDFLARE_DB_KEYS.');
-}
 // Base URL for the database service (this would be the actual Cloudflare endpoint)
-const DATABASE_BASE_URL = process.env.CLOUDFLARE_DB_URL || 'https://radio-archive-catalog.crazydubya.workers.dev';
+// Use relative API routes; server handles DB access via Cloudflare
+const DATABASE_BASE_URL = '';
 
 class DatabaseService {
   private apiKey: string;
 
   constructor() {
     // Use first key as primary, others as fallbacks
-    this.apiKey = CLOUDFLARE_DB_KEYS[0];
+    this.apiKey = ''; // not used; requests go to our Next.js API
   }
 
   private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<unknown> {
@@ -30,7 +25,7 @@ class DatabaseService {
       const response = await fetch(url, {
         ...options,
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
+          // 'Authorization': `Bearer ${this.apiKey}`, // no direct db auth client-side
           'Content-Type': 'application/json',
           ...options.headers
         }
@@ -51,8 +46,8 @@ class DatabaseService {
   // Get featured channels for homepage
   async getFeaturedChannels(): Promise<Channel[]> {
     try {
-      const data = await this.makeRequest('/api/channels/featured') as { channels: Channel[] };
-      return data.channels || [];
+      const data = await this.makeRequest('/api/home') as { data?: { channels?: Channel[] } };
+      return data.data?.channels || [];
     } catch (error) {
       console.error('Failed to fetch featured channels:', error);
       // Return mock data as fallback
